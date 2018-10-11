@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .border1
+        {
+            border-color: black;
+            border-style: dashed;
+            border-width: thin;
+        }
+    </style>
+    <script type="text/javascript">
+
+        var ExpandedIconChar = "-";
+        var CollapsedIconChar = "+";
+
+        var SampleJsonData1 = '{"id": "0001", "type": "donut", "name": "Cake", "ppu": 0.55, "batters": { "batter": [ { "id": "1001", "type": "Regular" }, { "id": "1002", "type": "Chocolate" } ] }, "topping": [ { "id": "5001", "type": "None" },{ "id": "5002", "type": "Glazed" },{ "id": "5005", "type": "Sugar" },{ "id": "5007", "type": "Powdered Sugar" } ] }';
+
+        var JsonObject = null;
+
+        function CreateJsonTreeElement()
+        {
+            var divContainer = document.createElement("div");
+            var divExpCol = document.createElement("div");
+            var ancExpCol = document.createElement("a");
+            var divBody = document.createElement("div");
+            var divName = document.createElement("div");
+            var divValue = document.createElement("div");
+
+
+            divContainer.appendChild(divExpCol);
+            divContainer.appendChild(divBody);
+            divExpCol.appendChild(ancExpCol);
+            divBody.appendChild(divName);
+            divBody.appendChild(divValue);
+
+            //divContainer.className = "border1";
+            //divExpCol.className = "border1";
+            //divBody.className = "border1";
+            //divName.className = "border1";
+            //divValue.className = "border1";
+
+            divContainer.style.display = "table-row";
+            divExpCol.style.display = "table-cell";
+            ancExpCol.style.textDecoration = "none";
+            divBody.style.display = "table-cell";
+            //divName.style.display = "block";
+            //divValue.style.display = "block";
+            divValue.style.marginLeft = "10px";
+
+            if (document.getElementById("inpChkBoxShowTreeExpanded").checked)
+            {
+                ancExpCol.innerHTML = ExpandedIconChar;
+            }
+            else
+            {
+                ancExpCol.innerHTML = CollapsedIconChar;
+                divValue.style.display = "none";
+            }
+            ancExpCol.href = "#";
+            ancExpCol.addEventListener("click", function () { MakeExpandOrCollapse(this); return false; });
+
+            return divContainer;
+        }
+
+        function CreateJsonTreeValue(jsonTreeValueElmt, jsonObjValue)
+        {
+            if (
+                (typeof jsonObjValue === 'string' || jsonObjValue instanceof String) ||
+                (typeof jsonObjValue === 'number' && isFinite(jsonObjValue)) ||
+                (typeof jsonObjValue === 'boolean') ||
+                (jsonObjValue === null || typeof jsonObjValue === 'undefined')
+            )
+            {
+                jsonTreeValueElmt.appendChild(document.createTextNode(jsonObjValue));
+            }
+            else if (jsonObjValue && typeof jsonObjValue === 'object' && jsonObjValue.constructor === Array)
+            {
+                //jsonObjValue.prototype.toString.call(o) === '[object Array]'
+                BuildListForArrays(jsonTreeValueElmt, jsonObjValue);
+            }
+            else if (jsonObjValue === '[object Object]' || typeof jsonObjValue == 'object')
+            {
+                BuildJsonTree(jsonTreeValueElmt, jsonObjValue);
+            }
+            else if ((jsonObjValue && typeof jsonObjValue === 'object' && jsonObjValue.constructor === RegExp) ||
+                (jsonObjValue instanceof Error && typeof jsonObjValue.message !== 'undefined'))
+            {
+                jsonTreeValueElmt.innerHTML = jsonObjValue.toString();
+            }
+            else if (jsonObjValue instanceof Date)
+            {
+                jsonTreeValueElmt.innerHTML = jsonObjValue.toString() + "<br\>In UTC :" + jsonObjValue.toUTCString();
+            }
+            else if (typeof jsonObjValue === 'function')
+            {
+                jsonTreeValueElmt.innerHTML = jsonObjValue;
+            }
+            else
+            {
+                // ???
+                jsonTreeValueElmt.innerHTML = jsonObjValue.toString();
+            }
+        }
+
+        function BuildJsonTree(jsonTreePrntElmt, jsonObj)
+        {
+            for (var key in jsonObj)
+            {
+                var jsonElmt = CreateJsonTreeElement();
+
+                jsonTreePrntElmt.appendChild(jsonElmt);
+
+                if (jsonObj.hasOwnProperty(key))
+                {
+                    jsonElmt.children[1].children[0].innerHTML = key;
+                    CreateJsonTreeValue(jsonElmt.children[1].children[1], jsonObj[key]);
+                }
+            }
+        }
+
+        function BuildListForArrays(jsonTreePrntElmt, arrObjs)
+        {
+            var arrayLength = arrObjs.length;
+            var olElmt = document.createElement("ol");
+            jsonTreePrntElmt.appendChild(olElmt);
+            olElmt.start = 0;
+
+            for (var i = 0; i < arrayLength; i++)
+            {
+                var liElmt = document.createElement("li");
+                olElmt.appendChild(liElmt);
+                CreateJsonTreeValue(liElmt, arrObjs[i]);
+            }
+        }
+
+        function MakeExpandOrCollapse(sender)
+        {
+            var valElement = sender.parentElement.parentElement.children[1].children[1];
+            if (sender.innerHTML == CollapsedIconChar)
+            {
+                valElement.style.display = "block";
+                sender.innerHTML = ExpandedIconChar;
+            }
+            else
+            {
+                valElement.style.display = "none";
+                sender.innerHTML = CollapsedIconChar;
+            }
+        }
+
+        function txtAreaJson_OnChange()
+        {
+            JsonObject = JSON.parse(document.getElementById("txtAreaJson").value);
+
+            var divJsonTree = document.getElementById("divJsonTree");
+            while (divJsonTree.firstChild)
+            {
+                divJsonTree.removeChild(divJsonTree.firstChild);
+            }
+            divJsonTree.innerHTML = "";
+
+            BuildJsonTree(document.getElementById("divJsonTree"), JsonObject);
+        }
+
+
+    </script>
+</head>
+<body style="font-family:'Courier New'" onload="javascript: document.getElementById('txtAreaJson').value = SampleJsonData1; txtAreaJson_OnChange();">
+
+    <div id="divContainer">
+
+        <div id="divInputArea">
+            <textarea id="txtAreaJson" cols="100" rows="5" onchange="javascript: txtAreaJson_OnChange();"></textarea>
+            <input id="inpChkBoxShowTreeExpanded" type="checkbox" value="ShowTreeExpanded" checked> Show Tree Expanded<br />
+        </div>
+
+        <div id="divTreeArea">
+            <div id="divJsonTree"></div>
+        </div>
+
+    </div>
+
+</body>
+</html>

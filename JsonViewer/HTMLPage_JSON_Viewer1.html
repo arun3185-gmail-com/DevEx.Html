@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .border1
+        {
+            border-color: black;
+            border-style: dashed;
+            border-width: thin;
+        }
+    </style>
+    <script type="text/javascript">
+        function MakeExpandOrCollapse(sender)
+        {
+            var valElement = sender.parentElement.parentElement.children[1].children[1];
+            if (sender.innerHTML == "+")
+            {
+                valElement.style.display = "block";
+                sender.innerHTML = "-";
+            }
+            else
+            {
+                valElement.style.display = "none";
+                sender.innerHTML = "+";
+            }
+        }
+    </script>
+</head>
+<body style="font-family:'Courier New'">
+
+    <span class="border1" style="display:table-row">
+        <span class="border1" style="display:table-cell"><a href="#" style="text-decoration: none" onclick="javascript: MakeExpandOrCollapse(this); return false;">-</a></span>
+        <span class="border1" style="display:table-cell">
+            <span class="border1" style="display:block">Name</span>
+            <span class="border1" style="display:block;margin-left:10px">Value</span>
+        </span>
+    </span>
+
+    <p></p>
+
+    <div class="border1" style="display:table-row">
+        <div class="border1" style="display:table-cell"><a href="#" style="text-decoration: none" onclick="javascript: MakeExpandOrCollapse(this); return false;">-</a></div>
+        <div class="border1" style="display:table-cell">
+            <div class="border1">Name</div>
+            <div class="border1" style="margin-left:10px">Value</div>
+        </div>
+    </div>
+
+    <p></p>
+
+    <div class="border1" style="display:table-row">
+        <div class="border1" style="display:table-cell"><a href="#" style="text-decoration: none" onclick="javascript: MakeExpandOrCollapse(this); return false;">-</a></div>
+        <div class="border1" style="display:table-cell">
+            <div class="border1">Name</div>
+            <div class="border1" style="margin-left:10px">
+                <div class="border1" style="display:table-row">
+                    <div class="border1" style="display:table-cell"><a href="#" style="text-decoration: none" onclick="javascript: MakeExpandOrCollapse(this); return false;">-</a></div>
+                    <div class="border1" style="display:table-cell">
+                        <div class="border1">Name</div>
+                        <div class="border1" style="margin-left:10px">Value</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
