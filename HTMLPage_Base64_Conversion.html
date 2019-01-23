@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>Base64 Conversion</title>
+
+    <script type="text/javascript">
+
+        function txtAreaUnsigned8bit_OnChange()
+        {
+            document.getElementById("txtAreaBase64").value = window.btoa(document.getElementById("txtAreaUnsigned8bit").value);
+        }
+
+        function txtAreaBase64_OnChange()
+        {
+            document.getElementById("txtAreaUnsigned8bit").value = window.atob(document.getElementById("txtAreaBase64").value);
+        }
+
+    </script>
+
+</head>
+<body style="font-family:'Courier New'">
+
+    <p>Base64 Conversion</p>
+
+    <div id="divContainer">
+
+        <div id="div_Unsigned8bit" style="display:inline-block;">
+            <div>Unsigned8bit</div>
+            <textarea id="txtAreaUnsigned8bit" cols="70" rows="25" onchange="javascript: txtAreaUnsigned8bit_OnChange();"></textarea>
+        </div>
+
+        <div id="div_Base64" style="display:inline-block;">
+                <div>Base64</div>
+            <textarea id="txtAreaBase64" cols="70" rows="25" onchange="javascript: txtAreaBase64_OnChange();"></textarea>
+        </div>
+
+    </div>
+
+</body>
+</html>
